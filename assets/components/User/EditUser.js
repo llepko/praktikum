@@ -9,7 +9,7 @@ const EditUser = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
-  const getUserApi = "http://symfony-proj.loc/user";
+  const getUserApi = "/user";
 
   useEffect(() => {
     getUser();

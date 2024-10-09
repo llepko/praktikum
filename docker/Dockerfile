@@ -48,5 +48,9 @@ RUN npm --version
 
 RUN npm install --global yarn
 
+
+
+
+
 # Set working directory
 WORKDIR /var/www

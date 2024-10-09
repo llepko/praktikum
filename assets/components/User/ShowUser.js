@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import Loader from "../Common/Loader";
 
 const ShowUser = () => {
-  const showUserApi = "http://symfony-proj.loc/user";
+  const showUserApi = "/user";
 
   const [user, setUser] = useState([]);
   const [isLoading, setIsLoading] = useState(false);

@@ -5,7 +5,7 @@ import "./User.css";
 const EditUser = () => {
   const [user, setUser] = useState([]);
   const { id } = useParams();
-  const getUserApi = "http://symfony-proj.loc/user";
+  const getUserApi = "/user";
 
   useEffect(() => {
     getUser();

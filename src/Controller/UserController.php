@@ -37,8 +37,6 @@ class UserController extends AbstractController
     {
         $entityManager = $doctrine->getManager();
 
-
-
         $user = new User();
         $user->setName($request->getPayload()->get('name'));
         $user->setLastName($request->getPayload()->get('lastName'));
