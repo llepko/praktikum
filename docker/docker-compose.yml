@@ -1,0 +1,57 @@
+version: '3.9'
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb-compose
+    environment:
+      MYSQL_ROOT_PASSWORD: symfony-proj-pass
+    ports:
+      - "3306:3306"
+    networks:
+      - symfony-network
+    volumes:
+      - ./mariadb:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_ARBITRARY=1
+    depends_on:
+      - mariadb
+    networks:
+      - symfony-network
+
+  symfony-nginx:
+    image: nginx:alpine
+    container_name: symfony-nginx
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+    volumes:
+      - "../:/var/www/symfony-proj"
+      - "./nginx/conf.d/:/etc/nginx/conf.d/"
+    networks:
+      - symfony-network
+
+  symfony-php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: symfony-php
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www
+    volumes:
+      - "../:/var/www/symfony-proj"
+    networks:
+      - symfony-network
+
+networks:
+  symfony-network:
+    driver: bridge
+    ipam:
+      driver: default
