@@ -9,7 +9,7 @@ const EditUser = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
-  const getUserApi = "/user";
+  const getUserApi = "/api/users";
 
   useEffect(() => {
     getUser();
@@ -76,7 +76,7 @@ const EditUser = () => {
               className="form-control"
               id="name"
               name="name"
-              value={user.name}
+              value={user.name || ''}
               onChange={handelInput}
           />
         </div>
@@ -89,7 +89,7 @@ const EditUser = () => {
               className="form-control"
               id="lastName"
               name="lastName"
-              value={user.lastName}
+              value={user.lastName || ''}
               onChange={handelInput}
           />
         </div>
@@ -102,7 +102,7 @@ const EditUser = () => {
               className="form-control"
               id="email"
               name="email"
-              value={user.email}
+              value={user.email || ''}
               onChange={handelInput}
           />
         </div>
