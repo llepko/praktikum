@@ -22,30 +22,38 @@ const CreateUser = () => {
 
     const handelSubmit = async (event) => {
         event.preventDefault();
-        console.log(user)
-        try {
-            setIsLoading(true);
-            const response = await fetch(createUserApi, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(user),
-            });
 
-            if (response.ok) {
-                console.log('Form submitted successfully!');
+        fetch(createUserApi, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(user),
+        })
+            .then((response) => {
+                var json = response.json();
+
+                if (!response.ok) {
+
+                    json.then((e) => {
+                        if(e.status == 422) {
+                            setError(e.detail);
+                        }
+                    });
+
+                    throw new Error("Form submission fail");
+                }
+                return json;
+            })
+            .then((data) => {
+                setIsLoading(true);
                 setUser({name: "",email: "",latName: ""})
-                navigate('/');
-            } else {
-                console.error('Form submission fail');
-            }
-
-        } catch (error) {
-            setError(error.message);
-        } finally{
-            setIsLoading(false);
-        }
+                navigate("/");
+            })
+            .catch((error) => {
+                setError(error.message);
+                setIsLoading(false);
+            })
     }
 
     return (

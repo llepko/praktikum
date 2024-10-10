@@ -44,10 +44,18 @@ const EditUser = () => {
       body: JSON.stringify(user),
     })
       .then((response) => {
+        var json = response.json();
+
         if (!response.ok) {
+          json.then((e) => {
+            if(e.status == 422) {
+              setError(e.detail);
+            }
+          });
+
           throw new Error("Network response was not ok");
         }
-        return response.json();
+        return json;
       })
       .then((data) => {
         setIsLoading(true);
