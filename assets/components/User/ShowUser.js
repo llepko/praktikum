@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import Loader from "../Common/Loader";
+import Loader from "./Common/Loader";
 
 const ShowUser = () => {
   const showUserApi = "/api/users";

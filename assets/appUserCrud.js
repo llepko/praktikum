@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
-import Header from "./components/User/Common/Header";
+import Header from "./components/Common/Header";
 import ShowUser from "./components/User/ShowUser";
 import EditUser from "./components/User/EditUser";
 import User from "./components/User/User";
