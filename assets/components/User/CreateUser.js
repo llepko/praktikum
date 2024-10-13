@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {useNavigate } from "react-router-dom";
-import Loader from './Common/Loader';
+import Loader from '../Common/Loader';
 import './User.css';
 const CreateUser = () => {
     const navigate = useNavigate();

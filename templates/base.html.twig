@@ -6,12 +6,17 @@
     {% block stylesheets %}
         {{ encore_entry_link_tags('app') }}
     {% endblock %}
-
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 </head>
 <body>
-{% block body %}{% endblock %}
+<div class="body-container">
+    <div class="main-container bgc-white">
+        <div role="main" class="main-content">
+            <div class="page-content container container-plus">
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
 {% block javascripts %}
     {{ encore_entry_script_tags('app') }}
 {% endblock %}

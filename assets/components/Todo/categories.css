@@ -1,0 +1,7 @@
+#modal-dialog-category {
+    max-width: 280px;
+}
+
+#modal-dialog-category modal-header{
+    z-index: 111;
+}

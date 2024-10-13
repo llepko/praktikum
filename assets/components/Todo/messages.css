@@ -1,0 +1,3 @@
+#message-list .input-group-prepend, #message-list .input-group-append {
+    z-index: 222;
+}
