@@ -4,7 +4,7 @@ import "./Common.css";
 export default function Header() {
     return (
         <div>
-            <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
+            <nav className="navbar navbar-expand-sm navbar-dark bg-dark visible">
                 <div className="container-fluid">
                     <Link to="/" className="navbar-brand" href="#">
                         <span className="navbar-text">Praktikum App</span>
@@ -20,12 +20,12 @@ export default function Header() {
                     <div className="collapse navbar-collapse" id="mynavbar">
                         <ul className="navbar-nav ms-auto">
                             <li className="nav-item">
-                                <Link className="nav-link" to="/">
+                                <Link className="nav-link" to="/list-user">
                                     Home
                                 </Link>
                             </li>
                             <li className="nav-item">
-                                <Link className="nav-link" to="create-user">
+                                <Link className="nav-link" to="/create-user">
                                     Create User
                                 </Link>
                             </li>

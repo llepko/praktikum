@@ -8,6 +8,10 @@ import 'bootstrap/dist/css/bootstrap.css';
 import '@fortawesome/fontawesome-free/css/fontawesome.css';
 import '@fortawesome/fontawesome-free/css/solid.css';
 import './styles/ace.css';
+import ShowUser from "./components/User/ShowUser";
+import EditUser from "./components/User/EditUser";
+import User from "./components/User/User";
+import CreateUser from "./components/User/CreateUser";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -18,6 +22,11 @@ root.render(
             <Route path="/create" element={<Create/>}/>
             <Route path="/update/:id" element={<Create/>}/>
             <Route path="/view/:id" element={<View/>}/>
+
+            <Route path="/list-user" element={<ShowUser/>}/>
+            <Route path="/edit-user/:id" element={<EditUser/>}/>
+            <Route path="/view-user/:id" element={<User/>}/>
+            <Route path="/create-user" element={<CreateUser/>}/>
         </Routes>
     </BrowserRouter>
 );

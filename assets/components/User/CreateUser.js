@@ -1,7 +1,9 @@
-import React, { useState } from 'react'
-import {useNavigate } from "react-router-dom";
+import React, {useState} from 'react'
+import {useNavigate} from "react-router-dom";
 import Loader from '../Common/Loader';
 import './User.css';
+import Header from "../Common/Header";
+
 const CreateUser = () => {
     const navigate = useNavigate();
     const createUserApi = "/api/users"
@@ -15,9 +17,9 @@ const CreateUser = () => {
 
     const handelInput = (event) => {
         event.preventDefault();
-        const { name, value } = event.target;
+        const {name, value} = event.target;
         console.log(name, value)
-        setUser({ ...user, [name]: value });
+        setUser({...user, [name]: value});
     }
 
     const handelSubmit = async (event) => {
@@ -36,7 +38,7 @@ const CreateUser = () => {
                 if (!response.ok) {
 
                     json.then((e) => {
-                        if(e.status == 422) {
+                        if (e.status == 422) {
                             setError(e.detail);
                         }
                     });
@@ -47,8 +49,8 @@ const CreateUser = () => {
             })
             .then((data) => {
                 setIsLoading(true);
-                setUser({name: "",email: "",latName: ""})
-                navigate("/");
+                setUser({name: "", email: "", latName: ""})
+                navigate("/list-user");
             })
             .catch((error) => {
                 setError(error.message);
@@ -57,31 +59,34 @@ const CreateUser = () => {
     }
 
     return (
-        <div className='user-form'>
-            <div className='heading'>
-            {isLoading && <Loader />}
-            {error && <p>Error: {error}</p>}
-                <p>User Form</p>
-            </div>
-            <form onSubmit={handelSubmit}>
-                <div className="mb-3">
-                    <label htmlFor="name" className="form-label">Name</label>
-                    <input type="text" className="form-control" id="name" name="name" value={user.name}
-                           onChange={handelInput}/>
+        <div>
+            <Header/>
+            <div className='user-form'>
+                <div className='heading'>
+                    {isLoading && <Loader/>}
+                    {error && <p>Error: {error}</p>}
+                    <p>User Form</p>
                 </div>
-                <div className="mb-3">
-                    <label htmlFor="lastName" className="form-label">Last name</label>
-                    <input type="text" className="form-control" id="lastName" name="lastName" value={user.lastName}
-                           onChange={handelInput}/>
-                </div>
-                <div className="mb-3 mt-3">
-                    <label htmlFor="email" className="form-label">Email</label>
-                    <input type="email" className="form-control" id="email" name="email" value={user.email}
-                           onChange={handelInput}/>
-                </div>
+                <form onSubmit={handelSubmit}>
+                    <div className="mb-3">
+                        <label htmlFor="name" className="form-label">Name</label>
+                        <input type="text" className="form-control" id="name" name="name" value={user.name}
+                               onChange={handelInput}/>
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="lastName" className="form-label">Last name</label>
+                        <input type="text" className="form-control" id="lastName" name="lastName" value={user.lastName}
+                               onChange={handelInput}/>
+                    </div>
+                    <div className="mb-3 mt-3">
+                        <label htmlFor="email" className="form-label">Email</label>
+                        <input type="email" className="form-control" id="email" name="email" value={user.email}
+                               onChange={handelInput}/>
+                    </div>
 
-                <button type="submit" className="btn btn-primary submit-btn bg-dark">Submit</button>
-            </form>
+                    <button type="submit" className="btn btn-primary submit-btn bg-dark">Submit</button>
+                </form>
+            </div>
         </div>
     )
 }
