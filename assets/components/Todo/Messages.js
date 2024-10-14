@@ -9,6 +9,7 @@ const Messages = () => {
     const showTodoListApi = "/api/todo_lists";
     const {categoryId} = useParams();
     const [message, setMessage] = useState([]);
+    const [search, setSearch] = useState({title: ''});
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     let navigate = useNavigate();
@@ -18,23 +19,39 @@ const Messages = () => {
         navigate(path);
     }
 
+    const handleSearch = (event) => {
+        event.preventDefault();
+        const {name, value} = event.target;
+        setSearch({...search, [name]: value});
+    }
+
     const handleActions = async (event) => {
         event.stopPropagation();
     };
 
     useEffect(() => {
         getTodo();
-    }, [categoryId]);
+    }, [categoryId, search.title]);
 
     const getTodo = () => {
+        var url = showTodoListApi;
+        if (categoryId) {
+            url = url.concat("?category=") + categoryId;
+        }
+        if (search.title) {
+            url = url.concat(categoryId ? '&' : '?')
+            .concat("title=") + search.title
+            .concat("&user.name=") + search.title;
+        }
+
         axios
-            .get(categoryId ? showTodoListApi.concat("?category=") + categoryId : showTodoListApi)
-            .then((res) => {
-                setMessage(res.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        .get(url)
+        .then((res) => {
+            setMessage(res.data);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
     };
 
     if (message.length < 0) {
@@ -57,6 +74,9 @@ const Messages = () => {
                                     </button>
                                 </div>
                                 <input type="text"
+                                       onChange={handleSearch}
+                                       name="title"
+                                       value={search.title}
                                        className="form-control radius-1 px-5 pl-md-3 brc-primary-tp2 brc-on-focus"
                                        placeholder="Search messages ..."/>
                                 <div className="input-group-append">

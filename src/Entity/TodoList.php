@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
+use App\ApiResource\OrSearchFilter;
 use App\Repository\TodoListRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -19,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     formats: 'json',
     normalizationContext: ['groups' => ['todoList']]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['category'])]
+#[ApiFilter(SearchFilter::class, properties: ['category', "title" => "partial"])]
 class TodoList
 {
     #[ORM\Id]
