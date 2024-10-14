@@ -19,6 +19,7 @@ root.render(
     <BrowserRouter>
         <Routes>
             <Route path="/" element={<Messages/>}/>
+            <Route path="/category/:categoryId" element={<Messages/>}/>
             <Route path="/create" element={<Create/>}/>
             <Route path="/update/:id" element={<Create/>}/>
             <Route path="/view/:id" element={<View/>}/>

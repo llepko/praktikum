@@ -19,7 +19,9 @@ const Create = () => {
         user: {id: ""},
         description: ""
     });
+
     const [categories, setCategories] = useState([]);
+
     const [user, setUser] = useState(null);
     const [error, setError] = useState(false);
 

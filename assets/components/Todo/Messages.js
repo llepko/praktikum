@@ -3,38 +3,23 @@ import axios from "axios";
 import Loader from "../Common/Loader";
 import Categories from "./Categories";
 import './messages.css';
-import {Link, useNavigate} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
+
 
 const Messages = () => {
     const showTodoListApi = "/api/todo_lists";
-
+    const {categoryId} = useParams();
     const [message, setMessage] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-
     let navigate = useNavigate();
+
+
+
     const routeTask = (id) => {
         let path = `/view/` + id;
         navigate(path);
     }
-
-    const handelDelete = async (id) => {
-        console.log("id : -", id);
-        setIsLoading(true);
-        try {
-            const response = await fetch(showTodoListApi.concat("/") + id, {
-                method: "DELETE",
-            });
-            if (!response.ok) {
-                throw new Error("Failed to delete item");
-            }
-            setMessage(Message.filter((item) => item.id !== id));
-        } catch (error) {
-            setError(error.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     const handleActions = async (event) => {
         event.stopPropagation();
@@ -42,17 +27,17 @@ const Messages = () => {
 
     useEffect(() => {
         getTodo();
-    }, []);
+    }, [categoryId]);
 
     const getTodo = () => {
         axios
-        .get(showTodoListApi)
-        .then((res) => {
-            setMessage(res.data);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+            .get(categoryId ? showTodoListApi.concat("?category=") + categoryId : showTodoListApi)
+            .then((res) => {
+                setMessage(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
     if (message.length < 0) {

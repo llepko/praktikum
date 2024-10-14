@@ -1,26 +1,29 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import './categories.css';
 
 const Categories = () => {
     const showCategoryApi = "/api/categoriess";
-
+    const {categoryId} = useParams();
     const [category, setCategory] = useState([]);
+
+    const activeClassName = (itemId) => {
+        return itemId == categoryId ? `active` : '' // or return a default class
+    }
 
     useEffect(() => {
         getCategories();
     }, []);
-
     const getCategories = () => {
         axios
-        .get(showCategoryApi)
-        .then((res) => {
-            setCategory(res.data);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+            .get(showCategoryApi)
+            .then((res) => {
+                setCategory(res.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
     if (category.length < 0) {
@@ -61,8 +64,8 @@ const Categories = () => {
 
                                         {category?.map((item, i) => {
                                             return (
-                                                <Link to={`/${item.id}`}
-                                                      className="d-style mb-1 btn py-25 btn-outline-dark btn-h-outline-blue btn-a-outline-blue btn-a-bold w-100 btn-brc-tp border-none border-l-4 radius-l-0 radius-r-round text-left"
+                                                <Link to={`/category/${item.id}`}
+                                                      className={activeClassName(item.id) + " d-style mb-1 btn py-25 btn-outline-dark btn-h-outline-blue btn-a-outline-blue btn-a-bold w-100 btn-brc-tp border-none border-l-4 radius-l-0 radius-r-round text-left"}
                                                       key={i}>
                                                     {item.name}
                                                     {item.todo.length > 0 ? <span

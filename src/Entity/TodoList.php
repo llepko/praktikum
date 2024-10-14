@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Link;
@@ -17,6 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     formats: 'json',
     normalizationContext: ['groups' => ['todoList']]
 )]
+#[ApiFilter(SearchFilter::class, properties: ['category'])]
 class TodoList
 {
     #[ORM\Id]
