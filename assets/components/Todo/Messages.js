@@ -5,7 +5,6 @@ import Categories from "./Categories";
 import './messages.css';
 import {Link, useNavigate, useParams} from "react-router-dom";
 
-
 const Messages = () => {
     const showTodoListApi = "/api/todo_lists";
     const {categoryId} = useParams();
@@ -13,8 +12,6 @@ const Messages = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     let navigate = useNavigate();
-
-
 
     const routeTask = (id) => {
         let path = `/view/` + id;
