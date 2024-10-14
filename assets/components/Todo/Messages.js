@@ -11,6 +11,7 @@ const Messages = () => {
     const [message, setMessage] = useState([]);
     const [search, setSearch] = useState({title: ''});
     const [isLoading, setIsLoading] = useState(false);
+    const [pagination, setPagination] = useState({});
     const [error, setError] = useState(null);
     let navigate = useNavigate();
 
@@ -33,21 +34,29 @@ const Messages = () => {
         getTodo();
     }, [categoryId, search.title]);
 
-    const getTodo = () => {
-        var url = showTodoListApi;
+    const getTodo = (url) => {
+        let params = [];
+
         if (categoryId) {
-            url = url.concat("?category=") + categoryId;
+            params.push(['category', categoryId])
         }
         if (search.title) {
-            url = url.concat(categoryId ? '&' : '?')
-            .concat("title=") + search.title
-            .concat("&user.name=") + search.title;
+            params.push(['title', search.title])
         }
+        // showMessageApi.concat("/")
+        let urlArgs = (new URLSearchParams(params)).toString();
+        urlArgs = urlArgs.toString();
+
+        url = url ? url.concat("&") + urlArgs : showTodoListApi.concat("?") + urlArgs
+        console.log(categoryId);
+        console.log(params);
+        console.log(urlArgs);
 
         axios
         .get(url)
         .then((res) => {
-            setMessage(res.data);
+            setMessage(res.data['hydra:member']);
+            setPagination(res.data['hydra:view']);
         })
         .catch((err) => {
             console.log(err);
@@ -151,25 +160,23 @@ const Messages = () => {
 
                     </div>
                     <div className="bgc-default-l4 p-3 align-items-center d-flex w-100">
-                        <div>
-                            Showing <span className="text-600">1</span> - <span className="text-600">10</span>
-                            of more than
-                            <span className="text-600">1000</span> messages
-                        </div>
-
                         <div className="ml-auto">
                             <nav className="d-inline-block" aria-label="Inbox navigation">
                                 <ul className="pagination align-items-center d-inline-flex mb-0">
                                     <li className="page-item mr-1">
-                                        <a className="page-link btn py-2 px-25 btn-sm border-2 brc-sec1ondary-l1 radius-r-0 text-600 btn-bgc-white btn-lighter-secondary btn-h-default btn-a-default"
-                                           href="#">
+                                        <a
+                                            onClick={() => getTodo(pagination['hydra:previous'])}
+                                            className={(pagination['hydra:previous'] ? '' : 'disabled') + " page-link btn py-2 px-25 btn-sm border-2 brc-sec1ondary-l1 radius-r-0 text-600 btn-bgc-white btn-lighter-secondary btn-h-default btn-a-default"}
+                                            href="#">
                                             <i className="fa fa-chevron-left"/>
                                         </a>
                                     </li>
 
                                     <li className="page-item">
-                                        <a className="page-link btn py-2 px-25 btn-sm border-2 brc-sec1ondary-l1 radius-l-0 text-600 btn-bgc-white btn-lighter-secondary btn-h-default btn-a-default"
-                                           href="#">
+                                        <a
+                                            onClick={() => getTodo(pagination['hydra:next'])}
+                                            className={(pagination['hydra:next'] ? '' : 'disabled') + " page-link btn py-2 px-25 btn-sm border-2 brc-sec1ondary-l1 radius-l-0 text-600 btn-bgc-white btn-lighter-secondary btn-h-default btn-a-default"}
+                                            href="#">
                                             <i className="fa fa-chevron-right"/>
                                         </a>
                                     </li>
