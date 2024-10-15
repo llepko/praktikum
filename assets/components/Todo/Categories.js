@@ -4,12 +4,13 @@ import {Link, useParams} from "react-router-dom";
 import './categories.css';
 import Alert from '@mui/material/Alert';
 
-const Categories = () => {
+const Categories = ({sideClass}) => {
     const showCategoryApi = "/api/categoriess";
     const {categoryId} = useParams();
     const [category, setCategory] = useState([]);
     const [showClassname, setClassName] = useState(false);
     const [error, setError] = useState(null);
+
     const [categoryItem, setCategoryItem] = useState({
         name: "",
     });
@@ -32,6 +33,10 @@ const Categories = () => {
                 console.log(err);
             });
     };
+
+    const setSideClass = (className) => {
+        sideClass.func();
+    }
 
     const handleInput = (event) => {
         event.preventDefault();
@@ -76,16 +81,21 @@ const Categories = () => {
     } else {
         return (
             <div className="col-12 col-md-4 col-xl-3">
-                {error && <Alert severity="error" onClose={() => {setError(null)}}>{error}</Alert>}
+                {error && <Alert severity="error" onClose={() => {
+                    setError(null)
+                }}>{error}</Alert>}
 
-                <div id="aside-menu" className="modal fade modal-off-md ace-aside aside-left">
+                <div id="aside-menu"
+                     className={(sideClass && sideClass.menu ? 'show' : '') + " modal fade modal-off-md ace-aside aside-left"}>
                     <div id="modal-dialog-category" className="modal-dialog modal-dialog-scrollable">
                         <div className="modal-content brc-dark-l4 border-y-0 border-l-0 radius-l-0">
 
                             <div className="modal-header d-md-none position-tr mt-n25 mr-n2 border-0">
                                 <button type="button"
-                                        className="btn btn-brc-tp btn-white btn-xs btn-h-red btn-a-red text-xl"
-                                        data-dismiss="modal" aria-label="Close">
+                                        className="btn close-btn-side btn-brc-tp btn-white btn-xs btn-h-red btn-a-red text-xl"
+                                        data-dismiss="modal"
+                                        onClick={() => setSideClass()}
+                                        aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
                             </div>
@@ -110,11 +120,18 @@ const Categories = () => {
                                           className="btn-group btn-group-toggle btn-group-vertical d-flex"
                                           data-toggle="buttons">
 
+                                        <Link to={`/`}
+                                              className={activeClassName(null) + " d-style mb-1 btn py-25 btn-outline-dark btn-h-outline-blue btn-a-outline-blue btn-a-bold w-100 btn-brc-tp border-none border-l-4 radius-l-0 radius-r-round text-left"}
+                                              key={0}>
+                                            All
+                                            <input type="radio" name="inbox"/>
+                                        </Link>
+
                                         {category?.map((item, i) => {
                                             return (
                                                 <Link to={`/category/${item.id}`}
                                                       className={activeClassName(item.id) + " d-style mb-1 btn py-25 btn-outline-dark btn-h-outline-blue btn-a-outline-blue btn-a-bold w-100 btn-brc-tp border-none border-l-4 radius-l-0 radius-r-round text-left"}
-                                                      key={i}>
+                                                      key={i + 1}>
                                                     {item.name}
                                                     {item.todo.length > 0 ? <span
                                                         className="badge badge-pill px-3 bgc-primary-l2 text-primary-d1 float-right">{item.todo.length}</span> : ''}

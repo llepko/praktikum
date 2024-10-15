@@ -12,6 +12,7 @@ const Messages = () => {
     const [search, setSearch] = useState({title: ''});
     const [isLoading, setIsLoading] = useState(false);
     const [pagination, setPagination] = useState({});
+    const [showMenu, setMenu] = useState(false);
     const [error, setError] = useState(null);
     let navigate = useNavigate();
 
@@ -19,7 +20,6 @@ const Messages = () => {
         let path = `/view/` + id;
         navigate(path);
     }
-
     const handleSearch = (event) => {
         event.preventDefault();
         const {name, value} = event.target;
@@ -63,12 +63,17 @@ const Messages = () => {
         });
     };
 
+    const triggerFooBar = () => {
+        console.log('triggerFooBar action')
+        setMenu(!showMenu)
+    };
+
     if (message.length < 0) {
         return <h1>no Message found</h1>;
     } else {
         return (
             <div className="row">
-                <Categories/>
+                <Categories sideClass={{menu: showMenu, func: triggerFooBar}}/>
                 <div className="col-12 col-md-8 col-xl-9 pt-3" id="message-list">
                     {isLoading && <Loader/>}
 
@@ -77,6 +82,7 @@ const Messages = () => {
                             <div className="input-group">
                                 <div className="input-group-prepend d-md-none">
                                     <button type="button"
+                                            onClick={() => triggerFooBar()}
                                             className="mr-n5 btn btn-brc-tp btn-outline-dark btn-a-green btn-h-green radius-l-1 px-25 btn-sm static"
                                             data-toggle="modal" data-target="#aside-menu">
                                         <i className="fa fa-bars"/>
