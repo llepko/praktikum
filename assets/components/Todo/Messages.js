@@ -4,6 +4,7 @@ import Loader from "../Common/Loader";
 import Categories from "./Categories";
 import './messages.css';
 import {Link, useNavigate, useParams} from "react-router-dom";
+import {Audio, Circles} from 'react-loader-spinner'
 
 const Messages = () => {
     const showTodoListApi = "/api/todo_lists";
@@ -35,6 +36,8 @@ const Messages = () => {
     }, [categoryId, search.title]);
 
     const getTodo = (url) => {
+        setIsLoading(true);
+
         let params = [];
 
         if (categoryId) {
@@ -48,15 +51,13 @@ const Messages = () => {
         urlArgs = urlArgs.toString();
 
         url = url ? url.concat("&") + urlArgs : showTodoListApi.concat("?") + urlArgs
-        console.log(categoryId);
-        console.log(params);
-        console.log(urlArgs);
 
         axios
         .get(url)
         .then((res) => {
             setMessage(res.data['hydra:member']);
             setPagination(res.data['hydra:view']);
+            setIsLoading(false);
         })
         .catch((err) => {
             console.log(err);
@@ -64,7 +65,6 @@ const Messages = () => {
     };
 
     const triggerFooBar = () => {
-        console.log('triggerFooBar action')
         setMenu(!showMenu)
     };
 
@@ -75,7 +75,14 @@ const Messages = () => {
             <div className="row">
                 <Categories sideClass={{menu: showMenu, func: triggerFooBar}}/>
                 <div className="col-12 col-md-8 col-xl-9 pt-3" id="message-list">
-                    {isLoading && <Loader/>}
+                    {isLoading && <Circles
+                        height="80"
+                        width="80"
+                        radius="9"
+                        wrapperClass="custom_spinner"
+                        color="#2771cb"
+                        ariaLabel="three-dots-loading"
+                    />}
 
                     <div className="d-flex flex-column flex-md-row pb-35 pt-2">
                         <div className="order-first order-md-last ml-md-auto mb-4 mb-md-0">
@@ -96,7 +103,7 @@ const Messages = () => {
                                        placeholder="Search messages ..."/>
                                 <div className="input-group-append">
                                     <button
-                                        className="btn btn-outline-blue radius-r-1 btn-tp px-25 btn-sm ml-n475 static"
+                                        className="btn radius-r-1 btn-tp px-25 btn-sm ml-n475 static"
                                         type="button">
                                         <i className="fa fa-search"/>
                                     </button>

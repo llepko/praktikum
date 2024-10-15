@@ -4,6 +4,7 @@ import {useNavigate} from "react-router-dom";
 import {Link, useParams} from "react-router-dom";
 import Categories from "./Categories";
 import './messages.css';
+import Alert from "@mui/material/Alert";
 
 const Create = () => {
     const navigate = useNavigate();
@@ -58,7 +59,7 @@ const Create = () => {
         fetch(id ? createUrl.concat("/") + id : createUrl, {
             method: id ? "PATCH" : "POST",
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "application/ld+json",
             },
             body: JSON.stringify(category),
         })
@@ -123,7 +124,9 @@ const Create = () => {
                 </div>
                 <hr className="mt-2 mt-sm-1 brc-black-tp10"/>
 
-                {error && <p>Error: {error}</p>}
+                {error && <Alert severity="error" onClose={() => {
+                    setError(null)
+                }}>{error}</Alert>}
 
                 <div className=" mr-2 my-2"
                      role="document">
