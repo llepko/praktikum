@@ -100,7 +100,7 @@ const Categories = ({sideClass}) => {
                                 </button>
                             </div>
 
-                            <div className="modal-body pt-lg-1 px-2 px-md-1 ace-scrollbar text-right">
+                            <div className="modal-body pt-lg-1 px-2 px-md-1 ace-scrrollbar text-right">
                                 <div className="pr-2 px-lg-3 pt-lg-4">
                                     <div className="text-center mb-4">
                                         <a href="#" data-toggle="modal"

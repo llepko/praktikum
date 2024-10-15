@@ -1,3 +1,11 @@
 #message-list .input-group-prepend, #message-list .input-group-append {
     z-index: 222;
 }
+
+
+@media (max-width: 1199.98px) {
+    .body-container {
+        max-width: 100vw;
+        overflow: visible !important;
+    }
+}

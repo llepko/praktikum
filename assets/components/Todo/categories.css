@@ -9,3 +9,6 @@
 .close-btn-side {
     z-index: 99 !important;
 }
+.aside-shown-above-nav {
+    z-index: 1200 !important;
+}

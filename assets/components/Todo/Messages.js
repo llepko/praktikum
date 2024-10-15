@@ -104,7 +104,6 @@ const Messages = () => {
                             </div>
                         </div>
                     </div>
-                    <div>
 
                         {message?.map((item, i) => {
                             return (
@@ -163,8 +162,6 @@ const Messages = () => {
                                 </div>
                             );
                         })}
-
-                    </div>
                     <div className="bgc-default-l4 p-3 align-items-center d-flex w-100">
                         <div className="ml-auto">
                             <nav className="d-inline-block" aria-label="Inbox navigation">
