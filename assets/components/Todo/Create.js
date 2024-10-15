@@ -17,35 +17,34 @@ const Create = () => {
 
     const [category, setCategory] = useState({
         title: "",
-        category: {id: ""},
-        user: {id: ""},
+        category: {id: "", name: ""},
+        user: {id: "", name: "", last_name: ""},
         description: ""
     });
 
     const [categories, setCategories] = useState([]);
+    const [user, setUser] = useState({options: {}, defaultValue: ''});
 
-    const [user, setUser] = useState(null);
     const [error, setError] = useState(false);
 
     const setForm = () => {
         axios
-            .get(createUrl.concat("/") + id)
-            .then((item) => {
-                setCategory(item.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        .get(createUrl.concat("/") + id)
+        .then((item) => {
+            setCategory(item.data);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
     };
 
     useEffect(() => {
         if (id) {
             setForm();
         }
-        console.log(category);
 
-        getCategories();
         getUsers();
+        getCategories();
     }, []);
 
     const handleInput = (event) => {
@@ -65,59 +64,66 @@ const Create = () => {
             },
             body: JSON.stringify(category),
         })
-            .then((response) => {
-                var json = response.json();
+        .then((response) => {
+            var json = response.json();
 
-                if (!response.ok) {
+            if (!response.ok) {
 
-                    json.then((e) => {
-                        if (e.status == 422) {
-                            setError(e.detail);
-                        }
-                    });
+                json.then((e) => {
+                    if (e.status == 422) {
+                        setError(e.detail);
+                    }
+                });
 
-                    throw new Error("Form submission fail");
-                }
-                return json;
-            })
-            .then((data) => {
-                setUser({name: "", email: "", latName: ""})
-                navigate("/");
-            })
-            .catch((error) => {
-                setError(error.message);
-            })
+                throw new Error("Form submission fail");
+            }
+            return json;
+        })
+        .then((data) => {
+            setUser({name: "", email: "", latName: ""})
+            navigate("/");
+        })
+        .catch((error) => {
+            setError(error.message);
+        })
     }
 
     const getCategories = () => {
         axios
-            .get(categoriesUrl)
-            .then((res) => {
-                const data = res.data?.map((item, i) => {
-                    return {value: "/api/categoriess/" + item.id, label: item.name};
-                });
-                setCategories(data);
-            })
-            .catch((err) => {
-                console.log(err);
+        .get(categoriesUrl)
+        .then((res) => {
+            const data = res.data?.map((item, i) => {
+                return {value: "/api/categoriess/" + item.id, label: item.name};
             });
-    };
 
+            setCategories(data);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    };
 
     const getUsers = () => {
         axios
-            .get(usersUrl)
-            .then((res) => {
-                const data = res.data?.map((item, i) => {
-                    return {value: "/api/users/" + item.id, label: item.name + ' ' + item.last_name};
-                });
-
-                setUser(data);
-            })
-            .catch((err) => {
-                console.log(err);
+        .get(usersUrl)
+        .then((res) => {
+            const data = res.data?.map((item, i) => {
+                return {value: "/api/users/" + item.id, label: item.name + ' ' + item.last_name};
             });
+
+            setUser(data);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
     };
+
+    const getDefaultValue = (label, value) => {
+        return {
+            label: label,
+            value: value
+        };
+    }
 
     return (
         <div className="row">
@@ -161,24 +167,24 @@ const Create = () => {
 
                                 <div className="form-group row">
                                     <div className="flex-grow-1 px-3">
-                                        {categories && <Select
+                                        {(!id || (categories && category.category.id)) && <Select
                                             options={categories}
-                                            defaultValue={{
-                                                label: category.category.name,
-                                                value: "/api/categoriess/" + category.category.id
-                                            }}
+                                            defaultValue={id ? getDefaultValue(
+                                                category.category.name,
+                                                "/api/categoriess/" + category.category.id
+                                            ) : ''}
                                         />}
                                     </div>
                                 </div>
 
                                 <div className="form-group row">
                                     <div className="flex-grow-1 px-3">
-                                        {user && <Select
+                                        {(!id || (user && category.user.id)) && <Select
                                             options={user}
-                                            defaultValue={{
-                                                label: category.user.name + ' ' + category.user.last_name,
-                                                value: "/api/users/" + category.user.id
-                                            }}
+                                            defaultValue={id ? getDefaultValue(
+                                                category.user.name + ' ' + category.user.last_name,
+                                                "/api/users/" + category.user.id
+                                            ) : ''}
                                         />}
                                     </div>
                                 </div>
