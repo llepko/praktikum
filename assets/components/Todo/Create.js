@@ -5,6 +5,7 @@ import {Link, useParams} from "react-router-dom";
 import Categories from "./Categories";
 import './messages.css';
 import Alert from "@mui/material/Alert";
+import Select from 'react-select'
 
 const Create = () => {
     const navigate = useNavigate();
@@ -28,22 +29,23 @@ const Create = () => {
 
     const setForm = () => {
         axios
-        .get(createUrl.concat("/") + id)
-        .then((item) => {
-            setCategory(item.data);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+            .get(createUrl.concat("/") + id)
+            .then((item) => {
+                setCategory(item.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
     useEffect(() => {
-        getCategories();
-        getUsers();
-
         if (id) {
             setForm();
         }
+        console.log(category);
+
+        getCategories();
+        getUsers();
     }, []);
 
     const handleInput = (event) => {
@@ -63,50 +65,58 @@ const Create = () => {
             },
             body: JSON.stringify(category),
         })
-        .then((response) => {
-            var json = response.json();
+            .then((response) => {
+                var json = response.json();
 
-            if (!response.ok) {
+                if (!response.ok) {
 
-                json.then((e) => {
-                    if (e.status == 422) {
-                        setError(e.detail);
-                    }
-                });
+                    json.then((e) => {
+                        if (e.status == 422) {
+                            setError(e.detail);
+                        }
+                    });
 
-                throw new Error("Form submission fail");
-            }
-            return json;
-        })
-        .then((data) => {
-            setUser({name: "", email: "", latName: ""})
-            navigate("/");
-        })
-        .catch((error) => {
-            setError(error.message);
-        })
+                    throw new Error("Form submission fail");
+                }
+                return json;
+            })
+            .then((data) => {
+                setUser({name: "", email: "", latName: ""})
+                navigate("/");
+            })
+            .catch((error) => {
+                setError(error.message);
+            })
     }
 
     const getCategories = () => {
         axios
-        .get(categoriesUrl)
-        .then((res) => {
-            setCategories(res.data);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+            .get(categoriesUrl)
+            .then((res) => {
+                const data = res.data?.map((item, i) => {
+                    return {value: "/api/categoriess/" + item.id, label: item.name};
+                });
+                setCategories(data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
+
 
     const getUsers = () => {
         axios
-        .get(usersUrl)
-        .then((res) => {
-            setUser(res.data);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+            .get(usersUrl)
+            .then((res) => {
+                const data = res.data?.map((item, i) => {
+                    return {value: "/api/users/" + item.id, label: item.name + ' ' + item.last_name};
+                });
+
+                setUser(data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
     return (
@@ -151,38 +161,25 @@ const Create = () => {
 
                                 <div className="form-group row">
                                     <div className="flex-grow-1 px-3">
-                                        <select name="category" onChange={handleInput}
-                                                className="px-1 brc-grey-l2 form-control border-none border-b-1 shadow-none radius-0">
-                                            <option>Choose category</option>
-                                            {categories?.map((item, i) => {
-                                                return (
-                                                    <option
-                                                        selected={category.category && item.id === category.category.id ? 'selected' : ''}
-                                                        value={"/api/categoriess/" + item.id}
-                                                        key={i}>
-                                                        {item.name}
-                                                    </option>
-                                                );
-                                            })}
-                                        </select>
+                                        {categories && <Select
+                                            options={categories}
+                                            defaultValue={{
+                                                label: category.category.name,
+                                                value: "/api/categoriess/" + category.category.id
+                                            }}
+                                        />}
                                     </div>
                                 </div>
 
                                 <div className="form-group row">
                                     <div className="flex-grow-1 px-3">
-                                        <select name="user" onChange={handleInput}
-                                                className="px-1 brc-grey-l2 form-control border-none border-b-1 shadow-none radius-0">
-                                            {user?.map((item, i) => {
-                                                return (
-                                                    <option
-                                                        selected={category.user && item.id === category.user.id ? 'selected' : ''}
-                                                        value={"/api/users/" + item.id}
-                                                        key={i}>
-                                                        {item.name} {item.last_name}
-                                                    </option>
-                                                );
-                                            })}
-                                        </select>
+                                        {user && <Select
+                                            options={user}
+                                            defaultValue={{
+                                                label: category.user.name + ' ' + category.user.last_name,
+                                                value: "/api/users/" + category.user.id
+                                            }}
+                                        />}
                                     </div>
                                 </div>
 

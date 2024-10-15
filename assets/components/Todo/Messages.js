@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import Loader from "../Common/Loader";
 import Categories from "./Categories";
 import './messages.css';
 import {Link, useNavigate, useParams} from "react-router-dom";
@@ -62,6 +61,23 @@ const Messages = () => {
         .catch((err) => {
             console.log(err);
         });
+    };
+
+    const handelDelete = async (id) => {
+        setIsLoading(true);
+        try {
+            const response = await fetch(showTodoListApi.concat("/") + id, {
+                method: "DELETE",
+            });
+            if (!response.ok) {
+                throw new Error("Failed to delete item");
+            }
+            setMessage(message.filter((item) => item.id !== id));
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const triggerFooBar = () => {
@@ -155,6 +171,7 @@ const Messages = () => {
                                             onClick={handleActions}
                                             className="message-actions position-r mr-1 v-hover p-15 bgc-white-tp1 shadow-sm radius-2px">
                                             <a href="#"
+                                               onClick={() => handelDelete(item.id)}
                                                className="btn btn-tp border-0 btn-text-danger btn-light-danger mr-2px px-2">
                                                 <i className="fa fa-trash-alt text-danger-m1 w-2"/>
                                             </a>
