@@ -4,10 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
-use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Link;
-use ApiPlatform\Metadata\Post;
 use App\ApiResource\OrSearchFilter;
 use App\Repository\TodoListRepository;
 use Doctrine\DBAL\Types\Types;
@@ -20,8 +17,8 @@ use Symfony\Component\Validator\Constraints as Assert;
     formats: 'jsonld',
     normalizationContext: ['groups' => ['todoList']]
 )]
-#[ApiFilter(OrSearchFilter::class, properties: [ "title", "user.name"])]
 #[ApiFilter(SearchFilter::class, properties: ["category" => "exact"])]
+#[ApiFilter(OrSearchFilter::class, properties: [ "title", "user.name", "user.last_name"])]
 class TodoList
 {
     #[ORM\Id]

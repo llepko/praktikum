@@ -45,6 +45,7 @@ const Messages = () => {
         if (search.title) {
             params.push(['title', search.title])
             params.push(['user.name', search.title])
+            params.push(['user.last_name', search.title])
         }
         // showMessageApi.concat("/")
         let urlArgs = (new URLSearchParams(params)).toString();

@@ -40,7 +40,7 @@ final class OrSearchFilter extends AbstractFilter implements SearchFilterInterfa
 
             $propertyName = $this->normalizePropertyName($property);
             if ($metadata->hasField($field)) {
-                $strategy = $this->getProperties()[$property] ?? self::STRATEGY_EXACT;
+                $strategy = $this->getProperties()[$property] ?? self::STRATEGY_PARTIAL;
                 $filterParameterNames = [$propertyName];
 
                 if (\in_array($strategy, [self::STRATEGY_EXACT, self::STRATEGY_IEXACT], true)) {
@@ -56,21 +56,6 @@ final class OrSearchFilter extends AbstractFilter implements SearchFilterInterfa
                         'is_collection' => str_ends_with((string)$filterParameterName, '[]'),
                     ];
                 }
-            } elseif ($metadata->hasAssociation($field)) {
-                $filterParameterNames = [
-                    $propertyName,
-                    $propertyName . '[]',
-                ];
-
-                foreach ($filterParameterNames as $filterParameterName) {
-                    $description[$filterParameterName] = [
-                        'property'      => $propertyName,
-                        'type'          => 'string',
-                        'required'      => false,
-                        'strategy'      => self::STRATEGY_EXACT,
-                        'is_collection' => str_ends_with((string)$filterParameterName, '[]'),
-                    ];
-                }
             }
         }
 
@@ -80,6 +65,14 @@ final class OrSearchFilter extends AbstractFilter implements SearchFilterInterfa
     /** {@inheritdoc } */
     protected function filterProperty(string $property, $value, QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, Operation $operation = null, array $context = []): void
     {
+        if (
+            null === $value
+            || !$this->isPropertyEnabled($property, $resourceClass)
+            || !$this->isPropertyMapped($property, $resourceClass, true)
+        ) {
+            return;
+        }
+
         $alias = $queryBuilder->getRootAliases()[0];
         $field = $property;
 
