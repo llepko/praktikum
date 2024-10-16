@@ -16,6 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     formats: 'jsonld',
     order: ['id' => 'DESC'],
+    paginationItemsPerPage: 5,
     normalizationContext: ['groups' => ['todoList']]
 )]
 #[ApiFilter(SearchFilter::class, properties: ["category" => "exact"])]
