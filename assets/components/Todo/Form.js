@@ -5,37 +5,30 @@ import axios from "axios";
 import Alert from "@mui/material/Alert";
 import Select from 'react-select'
 import Categories from "./Categories";
-import './styles/tasks.css';
 import Header from "./Header";
+import './styles/tasks.css';
 
 const Form = () => {
     const navigate = useNavigate();
     const {id} = useParams();
     const [isLoading, setIsLoading] = useState(false);
-
-    const [task, setTask] = useState({
-        title: "",
-        category: {id: "", name: ""},
-        user: {id: "", name: "", last_name: ""},
-        description: ""
-    });
-
+    const [task, setTask] = useState({title: ''});
     const [categories, setCategories] = useState([]);
-    const [user, setUser] = useState({options: {}, defaultValue: ''});
+    const [users, setUsers] = useState({options: {}, defaultValue: ''});
     const [error, setError] = useState(false);
 
     const setForm = () => {
         setIsLoading(true);
 
         axios
-        .get(config.API_URLS.TODO.concat("/") + id)
-        .then((item) => {
-            setTask(item.data);
-            setIsLoading(false);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+            .get(config.API_URLS.TODO.concat("/") + id)
+            .then((item) => {
+                setTask(item.data);
+                setIsLoading(false);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
     useEffect(() => {
@@ -50,71 +43,84 @@ const Form = () => {
     const handleInput = (event) => {
         event.preventDefault();
         const {name, value} = event.target;
-
         setTask({...task, [name]: value});
+    }
+
+    const handleSelect = (option, select) => {
+        if (!option.value) {
+            delete task[select.name];
+        } else {
+            setTask({...task, [select.name]: option.value});
+        }
     }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        if (id && task.user && typeof task.user == 'object') {
+            task.user = task.user['@id'];
+        }
+        if (id && task.category && typeof task.category == 'object') {
+            task.category = task.category['@id'];
+        }
+
 
         fetch(id ? config.API_URLS.TODO.concat("/") + id : config.API_URLS.TODO, {
             method: id ? "PATCH" : "POST",
             headers: {"Content-Type": "application/ld+json"},
             body: JSON.stringify(task),
         })
-        .then((response) => {
-            var json = response.json();
-
-            if (!response.ok) {
-
-                json.then((e) => {
-                    if (e.status == 422) {
-                        setError(e.detail);
-                    }
-                });
-
-                throw new Error("Form submission fail");
-            }
-            return json;
-        })
-        .then((data) => {
-            setUser({name: "", email: "", latName: ""})
-            navigate("/");
-        })
-        .catch((error) => {
-            setError(error.message);
-        })
+            .then((response) => {
+                var json = response.json();
+                if (!response.ok) {
+                    json.then((e) => setError(e.detail));
+                    throw new Error("Form submission fail");
+                }
+                return json;
+            })
+            .then((data) => {
+                navigate("/");
+            })
+            .catch((error) => {
+                setError(error.message);
+            })
     }
 
     const getCategories = () => {
         axios
-        .get(config.API_URLS.CATEGORIES)
-        .then((res) => {
-            const data = res.data?.map((item, i) => {
-                return {value: config.API_URLS.CATEGORIES.concat('/') + item.id, label: item.name};
+            .get(config.API_URLS.CATEGORIES)
+            .then((res) => {
+                const data = res.data?.map((item, i) => {
+                    return {value: config.API_URLS.CATEGORIES.concat('/') + item.id, label: item.name};
+                });
+                data.unshift(categoryPrompt);
+                setCategories(data);
+            })
+            .catch((err) => {
+                console.log(err);
             });
-
-            setCategories(data);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
     };
 
     const getUsers = () => {
         axios
-        .get(config.API_URLS.USERS.concat("?is_locked=false"))
-        .then((res) => {
-            const data = res.data?.map((item, i) => {
-                return {value: config.API_URLS.USERS.concat('/') + item.id, label: item.name + ' ' + item.last_name};
+            .get(config.API_URLS.USERS.concat("?is_locked=false"))
+            .then((res) => {
+                const data = res.data?.map((item, i) => {
+                    return {
+                        value: config.API_URLS.USERS.concat('/') + item.id,
+                        label: item.name + ' ' + item.last_name
+                    };
+                });
+                data.unshift(userPrompt);
+                setUsers(data);
+            })
+            .catch((err) => {
+                console.log(err);
             });
-
-            setUser(data);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
     };
+
+    const userPrompt = {value: '', label: 'Choose user'};
+    const categoryPrompt = {value: '', label: 'Choose category'};
 
     const getDefaultValue = (label, value) => {
         return {
@@ -161,33 +167,38 @@ const Form = () => {
                                                    onChange={handleInput}
                                                    name="title"
                                                    className="px-1 brc-grey-l2 form-control border-none border-b-1 shadow-none radius-0"
-                                                   id="id-form-field-1" placeholder="Title"/>
+                                                   id="id-form-field-1" placeholder="Task name"/>
                                         </div>
                                     </div>
 
                                     <div className="form-group row">
                                         <div className="flex-grow-1 px-3">
-                                            {(!id || (categories && task.category.id)) && <Select
+                                            {(!id || task.id) && <Select
                                                 options={categories}
-                                                defaultValue={id ? getDefaultValue(
+                                                onChange={handleSelect}
+                                                name='category'
+                                                defaultValue={id && task.category ? getDefaultValue(
                                                     task.category.name,
                                                     config.API_URLS.CATEGORIES.concat('/') + task.category.id
-                                                ) : ''}
+                                                ) : categoryPrompt}
                                             />}
                                         </div>
                                     </div>
-
+                                    {/**/}
                                     <div className="form-group row">
                                         <div className="flex-grow-1 px-3">
-                                            {(!id || (user && task.user.id)) && <Select
-                                                options={user}
+                                            {(!id || task.user) && <Select
+                                                options={users}
+                                                onChange={handleSelect}
+                                                name='user'
                                                 defaultValue={id ? getDefaultValue(
                                                     task.user.name + ' ' + task.user.last_name,
                                                     config.API_URLS.USERS.concat('/') + task.user.id
-                                                ) : ''}
+                                                ) : userPrompt}
                                             />}
                                         </div>
                                     </div>
+
 
                                     <div className="form-group row mt-3">
                                         <div className="px-3 w-100">

@@ -15,40 +15,42 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: TodoListRepository::class)]
 #[ApiResource(
     formats: 'jsonld',
+    order: ['id' => 'DESC'],
     normalizationContext: ['groups' => ['todoList']]
 )]
 #[ApiFilter(SearchFilter::class, properties: ["category" => "exact"])]
-#[ApiFilter(OrSearchFilter::class, properties: [ "title", "user.name", "user.last_name"])]
+#[ApiFilter(OrSearchFilter::class, properties: ["title", "user.name", "user.last_name"])]
 class TodoList
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups('todoList')]
-    private ?int                $id          = null;
+    private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
     #[Groups('todoList')]
-    private ?string             $title       = null;
+    private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups('todoList')]
-    private ?string             $description = null;
+    private ?string $description = null;
 
     #[ORM\Column]
     #[Groups('todoList')]
-    private ?\DateTimeImmutable $created_at  = null;
+    private ?\DateTimeImmutable $created_at = null;
 
     #[ORM\ManyToOne(inversedBy: 'todo')]
     #[Groups('todoList')]
-    private ?Categories         $category    = null;
+    private ?Categories $category = null;
 
     #[ORM\ManyToOne(inversedBy: 'todoLists', targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
     #[Assert\NotBlank]
     #[Groups('todoList')]
-    private ?User               $user        = null;
+    #[Assert\Valid]
+    private ?User $user = null;
 
     public function __construct()
     {

@@ -127,7 +127,7 @@ const Tasks = () => {
                                          className="message-item d-flex align-items-start bgc-h-primary-l4 px-2 px-md-3 py-25 radius-2px d-style pos-rel">
 
                                         <img
-                                            src={require("../../styles/avatar/avatar" + (Math.floor(Math.random() * 5) + 1) + ".jpg")}
+                                            src={require("./styles/avatar/avatar1.jpg")}
                                             className="col-auto px-0 ml-2 ml-md-3 w-5 h-5 radius-round border-2 brc-white"/>
 
                                         <div className="ml-3 d-flex flex-column flex-lg-row align-items-lg-center">

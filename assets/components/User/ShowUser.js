@@ -16,7 +16,6 @@ const ShowUser = () => {
     const [error, setError] = useState(null);
 
     const handelDelete = async (id) => {
-        console.log("id : -", id);
         setIsLoading(true);
         try {
             const response = await fetch(showUserApi.concat("/") + id, {

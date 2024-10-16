@@ -49,7 +49,7 @@ const View = () => {
                             </h3>
                             <div className="d-flex align-items-center">
                                 <img
-                                    src={require("../../styles/avatar/avatar" + (Math.floor(Math.random() * 5) + 1) + ".jpg")}
+                                    src={require("./styles/avatar/avatar1.jpg")}
                                     className="col-auto px-0 ml-2 ml-md-3 w-5 h-5 radius-round border-2 brc-white"/>
 
                                 <div className="ml-2">
