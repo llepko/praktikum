@@ -1,10 +1,10 @@
+import config from "../../config.json";
 import React, {useEffect, useState} from "react";
-import axios from "axios";
 import {Link, useParams} from "react-router-dom";
+import axios from "axios";
 import Categories from "./Categories";
 
 const View = () => {
-    const showMessageApi = "/api/todo_lists";
     const [message, setMessage] = useState([]);
     const {id} = useParams();
 
@@ -14,7 +14,7 @@ const View = () => {
 
     const getMessage = () => {
         axios
-        .get(showMessageApi.concat("/") + id)
+        .get(config.API_URLS.TODO.concat("/") + id)
         .then((item) => {
             setMessage(item.data);
         })

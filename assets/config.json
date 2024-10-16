@@ -1,0 +1,7 @@
+{
+  "API_URLS": {
+    "TODO"      : "/api/todo_lists",
+    "CATEGORIES": "/api/categoriess",
+    "USERS"     : "/api/users"
+  }
+}

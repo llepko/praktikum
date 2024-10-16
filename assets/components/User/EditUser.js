@@ -1,9 +1,9 @@
 import axios from "axios";
 import React, {useEffect, useState} from "react";
 import {useParams, useNavigate} from "react-router-dom";
-import Loader from "../Common/Loader";
+import Loader from "./Loader";
 import "./User.css";
-import Header from "../Common/Header";
+import Header from "./Header";
 
 const EditUser = () => {
     const [user, setUser] = useState([]);

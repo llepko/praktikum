@@ -2,7 +2,7 @@
     max-width: 280px;
 }
 
-#modal-dialog-category modal-header{
+#modal-dialog-category .modal-header{
     z-index: 111;
 }
 

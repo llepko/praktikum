@@ -1,18 +1,14 @@
+import config from "../../config.json";
 import React, {useEffect, useState} from "react";
+import {Link, useParams, useNavigate} from "react-router-dom";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
-import {Link, useParams} from "react-router-dom";
-import Categories from "./Categories";
-import './messages.css';
 import Alert from "@mui/material/Alert";
 import Select from 'react-select'
+import Categories from "./Categories";
+import './styles/tasks.css';
 
 const Create = () => {
     const navigate = useNavigate();
-
-    const categoriesUrl = "/api/categoriess";
-    const usersUrl = "/api/users?is_locked=false";
-    const createUrl = "/api/todo_lists";
     const {id} = useParams();
 
     const [category, setCategory] = useState({
@@ -29,7 +25,7 @@ const Create = () => {
 
     const setForm = () => {
         axios
-        .get(createUrl.concat("/") + id)
+        .get(config.API_URLS.TODO.concat("/") + id)
         .then((item) => {
             setCategory(item.data);
         })
@@ -57,7 +53,7 @@ const Create = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        fetch(id ? createUrl.concat("/") + id : createUrl, {
+        fetch(id ? config.API_URLS.TODO.concat("/") + id : config.API_URLS.TODO, {
             method: id ? "PATCH" : "POST",
             headers: {
                 "Content-Type": "application/ld+json",
@@ -90,10 +86,10 @@ const Create = () => {
 
     const getCategories = () => {
         axios
-        .get(categoriesUrl)
+        .get(config.API_URLS.CATEGORIES)
         .then((res) => {
             const data = res.data?.map((item, i) => {
-                return {value: "/api/categoriess/" + item.id, label: item.name};
+                return {value: config.API_URLS.CATEGORIES.concat('/') + item.id, label: item.name};
             });
 
             setCategories(data);
@@ -105,10 +101,10 @@ const Create = () => {
 
     const getUsers = () => {
         axios
-        .get(usersUrl)
+        .get(config.API_URLS.USERS.concat("?is_locked=false"))
         .then((res) => {
             const data = res.data?.map((item, i) => {
-                return {value: "/api/users/" + item.id, label: item.name + ' ' + item.last_name};
+                return {value: config.API_URLS.USERS.concat('/') + item.id, label: item.name + ' ' + item.last_name};
             });
 
             setUser(data);
@@ -171,7 +167,7 @@ const Create = () => {
                                             options={categories}
                                             defaultValue={id ? getDefaultValue(
                                                 category.category.name,
-                                                "/api/categoriess/" + category.category.id
+                                                config.API_URLS.CATEGORIES.concat('/') + category.category.id
                                             ) : ''}
                                         />}
                                     </div>
@@ -183,7 +179,7 @@ const Create = () => {
                                             options={user}
                                             defaultValue={id ? getDefaultValue(
                                                 category.user.name + ' ' + category.user.last_name,
-                                                "/api/users/" + category.user.id
+                                                config.API_URLS.USERS.concat('/') + category.user.id
                                             ) : ''}
                                         />}
                                     </div>

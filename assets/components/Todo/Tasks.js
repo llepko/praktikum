@@ -1,12 +1,12 @@
+import config from "../../config.json";
 import React, {useEffect, useState} from "react";
-import axios from "axios";
-import Categories from "./Categories";
-import './messages.css';
 import {Link, useNavigate, useParams} from "react-router-dom";
-import {Audio, Circles} from 'react-loader-spinner'
+import axios from "axios";
+import {Circles} from 'react-loader-spinner'
+import Categories from "./Categories";
+import './styles/tasks.css';
 
-const Messages = () => {
-    const showTodoListApi = "/api/todo_lists";
+const Tasks = () => {
     const {categoryId} = useParams();
     const [message, setMessage] = useState([]);
     const [search, setSearch] = useState({title: ''});
@@ -15,6 +15,7 @@ const Messages = () => {
     const [showMenu, setMenu] = useState(false);
     const [error, setError] = useState(null);
     let navigate = useNavigate();
+
 
     const routeTask = (id) => {
         let path = `/view/` + id;
@@ -51,7 +52,7 @@ const Messages = () => {
         let urlArgs = (new URLSearchParams(params)).toString();
         urlArgs = urlArgs.toString();
 
-        url = url ? url.concat("&") + urlArgs : showTodoListApi.concat("?") + urlArgs
+        url = url ? url.concat("&") + urlArgs : config.API_URLS.TODO.concat("?") + urlArgs
 
         axios
         .get(url)
@@ -68,7 +69,7 @@ const Messages = () => {
     const handelDelete = async (id) => {
         setIsLoading(true);
         try {
-            const response = await fetch(showTodoListApi.concat("/") + id, {
+            const response = await fetch(config.API_URLS.TODO.concat("/") + id, {
                 method: "DELETE",
             });
             if (!response.ok) {
@@ -218,6 +219,6 @@ const Messages = () => {
         );
     }
 };
-export default Messages;
+export default Tasks;
 
 

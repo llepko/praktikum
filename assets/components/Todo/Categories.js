@@ -1,11 +1,11 @@
+import config from "../../config.json";
 import React, {useEffect, useState} from "react";
-import axios from "axios";
 import {Link, useParams} from "react-router-dom";
-import './categories.css';
+import axios from "axios";
 import Alert from '@mui/material/Alert';
+import './styles/categories.css';
 
 const Categories = ({sideClass}) => {
-    const showCategoryApi = "/api/categoriess";
     const {categoryId} = useParams();
     const [category, setCategory] = useState([]);
     const [showClassname, setClassName] = useState(false);
@@ -25,7 +25,7 @@ const Categories = ({sideClass}) => {
 
     const getCategories = () => {
         axios
-            .get(showCategoryApi)
+            .get(config.API_URLS.CATEGORIES)
             .then((res) => {
                 setCategory(res.data);
             })
@@ -48,7 +48,7 @@ const Categories = ({sideClass}) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        fetch('/api/categoriess', {
+        fetch(config.API_URLS.CATEGORIES, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

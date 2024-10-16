@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {Link} from "react-router-dom";
-import Loader from "../Common/Loader";
-import Header from "../Common/Header";
+import Loader from "./Loader";
+import Header from "./Header";
 
 import 'bootstrap/dist/css/bootstrap.css';
 import '@fortawesome/fontawesome-free/css/fontawesome.css';
