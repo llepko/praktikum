@@ -77,7 +77,7 @@ const ShowUser = () => {
                                     <td>{item.lastName}</td>
                                     <td>{item.email}</td>
                                     <td>{item.createdAt ? item.createdAt : ''}</td>
-                                    <th>{item.isLocked ? <p className="text-danger">Yes</p> :
+                                    <th>{item.locked ? <p className="text-danger">Yes</p> :
                                         <p className="text-success">No</p>}</th>
                                     <td>
                                         <Link to={`/edit-user/${item.id}`}>

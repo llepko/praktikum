@@ -44,7 +44,7 @@ const EditUser = () => {
                     </tr>
                     <tr>
                         <td>Is Locked</td>
-                        <td>{user.isLocked ? <p className="text-danger">Yes</p> :
+                        <td>{user.locked ? <p className="text-danger">Yes</p> :
                             <p className="text-success">No</p>}</td>
                     </tr>
                     <tr>
