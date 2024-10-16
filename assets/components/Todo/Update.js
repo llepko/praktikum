@@ -13,6 +13,7 @@ const Update = () => {
         axios
         .get(config.API_URLS.TODO.concat("/") + id)
         .then((item) => {
+            delete item.data['@id'];
             setTask(item.data);
 
             let defaultVal = {

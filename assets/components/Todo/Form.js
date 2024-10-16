@@ -21,11 +21,13 @@ const Form = (prop) => {
     const [error, setError] = useState(false);
 
     const handleSelect = (option, select) => {
+
         if (!option.value) {
             delete task[select.name];
         } else {
             setTask({...task, [select.name]: option.value});
         }
+
     }
 
     const handleInput = (event) => {
@@ -53,12 +55,11 @@ const Form = (prop) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
         id && ([task.user] = handleDefaultValues(task.user));
         id && task.category && ([task.category] = handleDefaultValues(task.category));
 
         fetch(id ? config.API_URLS.TODO.concat("/") + id : config.API_URLS.TODO, {
-            method: id ? "PATCH" : "POST",
+            method: id ? "PUT" : "POST",
             headers: {"Content-Type": "application/ld+json"},
             body: JSON.stringify(task),
         })
