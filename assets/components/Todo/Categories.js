@@ -4,20 +4,20 @@ import {Link, useParams} from "react-router-dom";
 import axios from "axios";
 import Alert from '@mui/material/Alert';
 import './styles/categories.css';
+import {Circles} from "react-loader-spinner";
 
-const Categories = ({sideClass}) => {
+/**
+ *
+ * @param props {isLoading: boolean, isShowMenu: boolean, setMenuClass: callable}
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const Categories = (props) => {
     const {categoryId} = useParams();
-    const [category, setCategory] = useState([]);
-    const [showClassname, setClassName] = useState(false);
+    const [categories, setCategories] = useState([]);
+    const [isShowCreateCategory, setIsShowCreateCategory] = useState(false);
+    const [category, setCategoryInput] = useState({name: ""});
     const [error, setError] = useState(null);
-
-    const [categoryItem, setCategoryItem] = useState({
-        name: "",
-    });
-
-    const activeClassName = (itemId) => {
-        return itemId == categoryId ? `active` : '' // or return a default class
-    }
 
     useEffect(() => {
         getCategories();
@@ -25,58 +25,53 @@ const Categories = ({sideClass}) => {
 
     const getCategories = () => {
         axios
-            .get(config.API_URLS.CATEGORIES)
-            .then((res) => {
-                setCategory(res.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        .get(config.API_URLS.CATEGORIES)
+        .then((res) => {
+            setCategories(res.data);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
     };
 
-    const setSideClass = (className) => {
-        sideClass.func();
-    }
+    const setSideClass = () => props.setMenuClass();
 
     const handleInput = (event) => {
         event.preventDefault();
         const {name, value} = event.target;
-
-        setCategoryItem({...categoryItem, [name]: value});
+        setCategoryInput({...category, [name]: value});
     }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        setIsShowCreateCategory(false);
 
         fetch(config.API_URLS.CATEGORIES, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(categoryItem),
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(category),
         })
-            .then((response) => {
-                var json = response.json();
+        .then((response) => {
+            var json = response.json();
 
-                if (!response.ok) {
-                    json.then((e) => {
-                        if (e.status == 422) {
-                            setError(e.detail);
-                        }
-                    });
-                }
-                return json;
-            })
-            .then((data) => {
-                getCategories()
-            })
-            .catch((error) => {
-            })
-        setClassName(false);
-        setCategoryItem({name: ""});
+            if (!response.ok) {
+                json.then((e) => setError(e.detail));
+            }
+            return json;
+        })
+        .then((data) => {
+            getCategories();
+            setCategoryInput({name: ""});
+        })
+        .catch((error) => {
+        })
     }
 
-    if (category.length < 0) {
+    const activeClassName = (itemId) => {
+        return itemId == categoryId ? `active` : ''
+    }
+
+    if (categories.length < 0) {
         return <h1>no category found</h1>;
     } else {
         return (
@@ -85,8 +80,17 @@ const Categories = ({sideClass}) => {
                     setError(null)
                 }}>{error}</Alert>}
 
+                {props.isLoading && <Circles
+                    height="80"
+                    width="80"
+                    radius="9"
+                    wrapperClass="custom_spinner"
+                    color="#2771cb"
+                    ariaLabel="three-dots-loading"
+                />}
+
                 <div id="aside-menu"
-                     className={(sideClass && sideClass.menu ? 'show' : '') + " modal fade modal-off-md ace-aside aside-left"}>
+                     className={(props && props.isShowMenu ? 'show' : '') + " modal fade modal-off-md ace-aside aside-left"}>
                     <div id="modal-dialog-category" className="modal-dialog modal-dialog-scrollable">
                         <div className="modal-content brc-dark-l4 border-y-0 border-l-0 radius-l-0">
 
@@ -104,7 +108,7 @@ const Categories = ({sideClass}) => {
                                 <div className="pr-2 px-lg-3 pt-lg-4">
                                     <div className="text-center mb-4">
                                         <a href="#" data-toggle="modal"
-                                           onClick={() => setClassName(!showClassname)}
+                                           onClick={() => setIsShowCreateCategory(!isShowCreateCategory)}
                                            className="btn btn-blue mr-1 py-2 text-105 radius-2">
                                             <i className="fa fa-plus mr-1"/>
                                             Category
@@ -127,7 +131,7 @@ const Categories = ({sideClass}) => {
                                             <input type="radio" name="inbox"/>
                                         </Link>
 
-                                        {category?.map((item, i) => {
+                                        {categories?.map((item, i) => {
                                             return (
                                                 <Link to={`/category/${item.id}`}
                                                       className={activeClassName(item.id) + " d-style mb-1 btn py-25 btn-outline-dark btn-h-outline-blue btn-a-outline-blue btn-a-bold w-100 btn-brc-tp border-none border-l-4 radius-l-0 radius-r-round text-left"}
@@ -148,7 +152,7 @@ const Categories = ({sideClass}) => {
 
 
                 <div
-                    className={(showClassname ? 'show' : '') + " modal modal-nb ace-aside aside-bottom aside-r aside-fade aside-offset aside-shown-above-nav"}
+                    className={(isShowCreateCategory ? 'show' : '') + " modal modal-nb ace-aside aside-bottom aside-r aside-fade aside-offset aside-shown-above-nav"}
                     id="aside-compose" tabIndex="-1" role="dialog" aria-hidden="false">
 
                     <div className="modal-dialog modal-dialog-scrollable mr-2 my-2"
@@ -166,7 +170,7 @@ const Categories = ({sideClass}) => {
                                             <input type="text"
                                                    onChange={handleInput}
                                                    name='name'
-                                                   value={categoryItem.name}
+                                                   value={category.name}
                                                    className="px-1 brc-grey-l2 form-control border-none border-b-1 shadow-none radius-0"
                                                    placeholder="Name"/>
                                         </div>

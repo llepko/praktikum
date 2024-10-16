@@ -7,11 +7,12 @@ import Select from 'react-select'
 import Categories from "./Categories";
 import './styles/tasks.css';
 
-const Create = () => {
+const Form = () => {
     const navigate = useNavigate();
     const {id} = useParams();
+    const [isLoading, setIsLoading] = useState(false);
 
-    const [category, setCategory] = useState({
+    const [task, setTask] = useState({
         title: "",
         category: {id: "", name: ""},
         user: {id: "", name: "", last_name: ""},
@@ -20,14 +21,16 @@ const Create = () => {
 
     const [categories, setCategories] = useState([]);
     const [user, setUser] = useState({options: {}, defaultValue: ''});
-
     const [error, setError] = useState(false);
 
     const setForm = () => {
+        setIsLoading(true);
+
         axios
         .get(config.API_URLS.TODO.concat("/") + id)
         .then((item) => {
-            setCategory(item.data);
+            setTask(item.data);
+            setIsLoading(false);
         })
         .catch((err) => {
             console.log(err);
@@ -47,7 +50,7 @@ const Create = () => {
         event.preventDefault();
         const {name, value} = event.target;
 
-        setCategory({...category, [name]: value});
+        setTask({...task, [name]: value});
     }
 
     const handleSubmit = async (event) => {
@@ -55,10 +58,8 @@ const Create = () => {
 
         fetch(id ? config.API_URLS.TODO.concat("/") + id : config.API_URLS.TODO, {
             method: id ? "PATCH" : "POST",
-            headers: {
-                "Content-Type": "application/ld+json",
-            },
-            body: JSON.stringify(category),
+            headers: {"Content-Type": "application/ld+json"},
+            body: JSON.stringify(task),
         })
         .then((response) => {
             var json = response.json();
@@ -123,7 +124,7 @@ const Create = () => {
 
     return (
         <div className="row">
-            <Categories/>
+            <Categories isLoading={isLoading}/>
             <div className="col-12 col-md-8 col-xl-9 pt-3">
                 <div className="d-flex flex-wrap py-1 pt-lg-3 pb-lg-2 mt-lg-1">
                     <Link to={`/`} id="message-list-back-btn"
@@ -153,7 +154,7 @@ const Create = () => {
                                 <div className="form-group row">
                                     <div className="flex-grow-1 px-3">
                                         <input type="text"
-                                               value={category.title}
+                                               value={task.title}
                                                onChange={handleInput}
                                                name="title"
                                                className="px-1 brc-grey-l2 form-control border-none border-b-1 shadow-none radius-0"
@@ -163,11 +164,11 @@ const Create = () => {
 
                                 <div className="form-group row">
                                     <div className="flex-grow-1 px-3">
-                                        {(!id || (categories && category.category.id)) && <Select
+                                        {(!id || (categories && task.category.id)) && <Select
                                             options={categories}
                                             defaultValue={id ? getDefaultValue(
-                                                category.category.name,
-                                                config.API_URLS.CATEGORIES.concat('/') + category.category.id
+                                                task.category.name,
+                                                config.API_URLS.CATEGORIES.concat('/') + task.category.id
                                             ) : ''}
                                         />}
                                     </div>
@@ -175,11 +176,11 @@ const Create = () => {
 
                                 <div className="form-group row">
                                     <div className="flex-grow-1 px-3">
-                                        {(!id || (user && category.user.id)) && <Select
+                                        {(!id || (user && task.user.id)) && <Select
                                             options={user}
                                             defaultValue={id ? getDefaultValue(
-                                                category.user.name + ' ' + category.user.last_name,
-                                                config.API_URLS.USERS.concat('/') + category.user.id
+                                                task.user.name + ' ' + task.user.last_name,
+                                                config.API_URLS.USERS.concat('/') + task.user.id
                                             ) : ''}
                                         />}
                                     </div>
@@ -189,7 +190,7 @@ const Create = () => {
                                     <div className="px-3 w-100">
                                         <textarea onChange={handleInput}
                                                   name="description"
-                                                  defaultValue={category.description}
+                                                  defaultValue={task.description}
                                                   className="px-1 brc-grey-l2 form-control border-none border-b-1 shadow-none radius-0"
                                                   id="id-form-field-1"
                                                   placeholder="Description"/>
@@ -211,6 +212,6 @@ const Create = () => {
         </div>
     );
 };
-export default Create;
+export default Form;
 
 

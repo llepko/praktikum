@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import View from "./components/Todo/View";
 import Tasks from "./components/Todo/Tasks";
-import Create from "./components/Todo/Create";
+import Form from "./components/Todo/Form";
 import ShowUser from "./components/User/ShowUser";
 import EditUser from "./components/User/EditUser";
 import User from "./components/User/User";
@@ -20,8 +20,8 @@ root.render(
         <Routes>
             <Route path="/" element={<Tasks/>}/>
             <Route path="/category/:categoryId" element={<Tasks/>}/>
-            <Route path="/create" element={<Create/>}/>
-            <Route path="/update/:id" element={<Create/>}/>
+            <Route path="/create" element={<Form/>}/>
+            <Route path="/update/:id" element={<Form/>}/>
             <Route path="/view/:id" element={<View/>}/>
 
             <Route path="/list-user" element={<ShowUser/>}/>
