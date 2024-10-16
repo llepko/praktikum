@@ -1,19 +1,22 @@
 import config from "../../config.json";
 import React, {useEffect, useState} from "react";
-import {Link, useParams, useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import axios from "axios";
 import Alert from "@mui/material/Alert";
 import Select from 'react-select'
 import Categories from "./Categories";
 import Header from "./Header";
-import './styles/tasks.css';
 
-const Form = () => {
+const Form = (prop) => {
     const navigate = useNavigate();
-    const {id} = useParams();
+    const id = prop.id ? prop.id : null;
     const [isLoading, setIsLoading] = useState(false);
     const [task, setTask] = useState({title: ''});
     const [categories, setCategories] = useState([]);
+    const userPrompt = {value: '', label: 'Choose user'};
+    const categoryPrompt = {value: '', label: 'Choose category'};
+
+    const [defaultValues, setDefaultValues] = useState({users: userPrompt, category: categoryPrompt});
     const [users, setUsers] = useState({options: {}, defaultValue: ''});
     const [error, setError] = useState(false);
 
@@ -25,14 +28,28 @@ const Form = () => {
         }
     }
 
+    const handleInput = (event) => {
+        event.preventDefault();
+        const {name, value} = event.target;
+        setTask({...task, [name]: value});
+    }
+
     const handleDefaultValues = function () {
         const args = Array.from(arguments);
 
         return args?.map((item, i) => {
             return typeof item == 'object' ? item['@id'] : item;
-
         });
     }
+
+    useEffect(() => {
+        getUsers();
+        getCategories();
+
+        prop.task && setTask(prop.task);
+        prop.defaultValues && setDefaultValues(prop.defaultValues);
+
+    }, [prop]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -40,98 +57,62 @@ const Form = () => {
         id && ([task.user] = handleDefaultValues(task.user));
         id && task.category && ([task.category] = handleDefaultValues(task.category));
 
-
         fetch(id ? config.API_URLS.TODO.concat("/") + id : config.API_URLS.TODO, {
             method: id ? "PATCH" : "POST",
             headers: {"Content-Type": "application/ld+json"},
             body: JSON.stringify(task),
         })
-            .then((response) => {
-                var json = response.json();
-                if (!response.ok) {
-                    json.then((e) => setError(e.detail));
-                    throw new Error("Form submission fail");
-                }
-                return json;
-            })
-            .then((data) => {
-                navigate("/");
-            })
-            .catch((error) => {
-                setError(error.message);
-            })
+        .then((response) => {
+            var json = response.json();
+            if (!response.ok) {
+                json.then((e) => setError(e.detail));
+                throw new Error("Form submission fail");
+            }
+            return json;
+        })
+        .then((data) => {
+            navigate("/");
+        })
+        .catch((error) => {
+            setError(error.message);
+        })
     }
 
-    const handleInput = (event) => {
-        event.preventDefault();
-        const {name, value} = event.target;
-        setTask({...task, [name]: value});
-    }
-
-    const setForm = () => {
+    const getCategories = () => {
         setIsLoading(true);
 
         axios
-            .get(config.API_URLS.TODO.concat("/") + id)
-            .then((item) => {
-                setTask(item.data);
-                setIsLoading(false);
-            })
-            .catch((err) => {
-                console.log(err);
+        .get(config.API_URLS.CATEGORIES)
+        .then((res) => {
+            const data = res.data?.map((item, i) => {
+                return {value: config.API_URLS.CATEGORIES.concat('/') + item.id, label: item.name};
             });
-    };
-
-    useEffect(() => {
-        id && setForm();
-        !id && setTask({title: ''});
-        getUsers();
-        getCategories();
-    }, [id]);
-
-
-    const getCategories = () => {
-        axios
-            .get(config.API_URLS.CATEGORIES)
-            .then((res) => {
-                const data = res.data?.map((item, i) => {
-                    return {value: config.API_URLS.CATEGORIES.concat('/') + item.id, label: item.name};
-                });
-                data.unshift(categoryPrompt);
-                setCategories(data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+            data.unshift(categoryPrompt);
+            setCategories(data);
+            setIsLoading(false);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
     };
 
     const getUsers = () => {
+        setIsLoading(true);
+
         axios
-            .get(config.API_URLS.USERS.concat("?is_locked=false"))
-            .then((res) => {
-                const data = res.data?.map((item, i) => {
-                    return {
-                        value: config.API_URLS.USERS.concat('/') + item.id,
-                        label: item.name + ' ' + item.last_name
-                    };
-                });
-                data.unshift(userPrompt);
-                setUsers(data);
-            })
-            .catch((err) => {
-                console.log(err);
+        .get(config.API_URLS.USERS.concat("?is_locked=false"))
+        .then((res) => {
+            const data = res.data?.map((item, i) => {
+                return {value: config.API_URLS.USERS.concat('/') + item.id, label: item.name + ' ' + item.last_name};
             });
+            data.unshift(userPrompt);
+            setUsers(data);
+            setIsLoading(false);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
     };
-
-    const userPrompt = {value: '', label: 'Choose user'};
-    const categoryPrompt = {value: '', label: 'Choose category'};
-
-    const getDefaultValue = (label, value) => {
-        return {
-            label: label,
-            value: value
-        };
-    }
 
     return (
         <>
@@ -181,28 +162,21 @@ const Form = () => {
                                                 options={categories}
                                                 onChange={handleSelect}
                                                 name='category'
-                                                defaultValue={id && task.category ? getDefaultValue(
-                                                    task.category.name,
-                                                    config.API_URLS.CATEGORIES.concat('/') + task.category.id
-                                                ) : categoryPrompt}
-                                            />}
-                                        </div>
-                                    </div>
-                                    {/**/}
-                                    <div className="form-group row">
-                                        <div className="flex-grow-1 px-3">
-                                            {(!id || task.user) && <Select
-                                                options={users}
-                                                onChange={handleSelect}
-                                                name='user'
-                                                defaultValue={id ? getDefaultValue(
-                                                    task.user.name + ' ' + task.user.last_name,
-                                                    config.API_URLS.USERS.concat('/') + task.user.id
-                                                ) : userPrompt}
+                                                defaultValue={defaultValues.category}
                                             />}
                                         </div>
                                     </div>
 
+                                    <div className="form-group row">
+                                        <div className="flex-grow-1 px-3">
+                                            {(!id || task.id) && <Select
+                                                options={users}
+                                                onChange={handleSelect}
+                                                name='user'
+                                                defaultValue={defaultValues.users}
+                                            />}
+                                        </div>
+                                    </div>
 
                                     <div className="form-group row mt-3">
                                         <div className="px-3 w-100">

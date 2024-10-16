@@ -1,6 +1,7 @@
 import {Circles} from "react-loader-spinner";
 import Alert from "@mui/material/Alert";
 import React from "react";
+import './styles/tasks.css';
 
 const Header = (props) => {
     return (<>

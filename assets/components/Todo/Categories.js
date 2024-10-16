@@ -4,7 +4,6 @@ import {Link, useParams} from "react-router-dom";
 import axios from "axios";
 import Alert from '@mui/material/Alert';
 import './styles/categories.css';
-import Header from "./Header";
 
 /**
  *
