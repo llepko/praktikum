@@ -17,35 +17,6 @@ const Form = () => {
     const [users, setUsers] = useState({options: {}, defaultValue: ''});
     const [error, setError] = useState(false);
 
-    const setForm = () => {
-        setIsLoading(true);
-
-        axios
-            .get(config.API_URLS.TODO.concat("/") + id)
-            .then((item) => {
-                setTask(item.data);
-                setIsLoading(false);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    };
-
-    useEffect(() => {
-        if (id) {
-            setForm();
-        }
-
-        getUsers();
-        getCategories();
-    }, []);
-
-    const handleInput = (event) => {
-        event.preventDefault();
-        const {name, value} = event.target;
-        setTask({...task, [name]: value});
-    }
-
     const handleSelect = (option, select) => {
         if (!option.value) {
             delete task[select.name];
@@ -54,15 +25,20 @@ const Form = () => {
         }
     }
 
+    const handleDefaultValues = function () {
+        const args = Array.from(arguments);
+
+        return args?.map((item, i) => {
+            return typeof item == 'object' ? item['@id'] : item;
+
+        });
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (id && task.user && typeof task.user == 'object') {
-            task.user = task.user['@id'];
-        }
-        if (id && task.category && typeof task.category == 'object') {
-            task.category = task.category['@id'];
-        }
+        id && ([task.user] = handleDefaultValues(task.user));
+        id && task.category && ([task.category] = handleDefaultValues(task.category));
 
 
         fetch(id ? config.API_URLS.TODO.concat("/") + id : config.API_URLS.TODO, {
@@ -85,6 +61,34 @@ const Form = () => {
                 setError(error.message);
             })
     }
+
+    const handleInput = (event) => {
+        event.preventDefault();
+        const {name, value} = event.target;
+        setTask({...task, [name]: value});
+    }
+
+    const setForm = () => {
+        setIsLoading(true);
+
+        axios
+            .get(config.API_URLS.TODO.concat("/") + id)
+            .then((item) => {
+                setTask(item.data);
+                setIsLoading(false);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    useEffect(() => {
+        id && setForm();
+        !id && setTask({title: ''});
+        getUsers();
+        getCategories();
+    }, [id]);
+
 
     const getCategories = () => {
         axios
