@@ -40,9 +40,11 @@ const Tasks = () => {
             params.push(['category', categoryId])
         }
         if (search.title) {
-            params.push(['title', search.title])
-            params.push(['user.name', search.title])
-            params.push(['user.last_name', search.title])
+            params = [
+                ['title', search.title],
+                ['user.name', search.title],
+                ['user.last_name', search.title]
+            ];
         }
         let urlArgs = (new URLSearchParams(params)).toString();
         urlArgs = urlArgs.toString();
