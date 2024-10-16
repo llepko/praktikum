@@ -4,7 +4,7 @@ import {Link, useParams} from "react-router-dom";
 import axios from "axios";
 import Alert from '@mui/material/Alert';
 import './styles/categories.css';
-import {Circles} from "react-loader-spinner";
+import Header from "./Header";
 
 /**
  *
@@ -75,19 +75,11 @@ const Categories = (props) => {
         return <h1>no category found</h1>;
     } else {
         return (
+
             <div className="col-12 col-md-4 col-xl-3">
                 {error && <Alert severity="error" onClose={() => {
                     setError(null)
                 }}>{error}</Alert>}
-
-                {props.isLoading && <Circles
-                    height="80"
-                    width="80"
-                    radius="9"
-                    wrapperClass="custom_spinner"
-                    color="#2771cb"
-                    ariaLabel="three-dots-loading"
-                />}
 
                 <div id="aside-menu"
                      className={(props && props.isShowMenu ? 'show' : '') + " modal fade modal-off-md ace-aside aside-left"}>
@@ -178,7 +170,8 @@ const Categories = (props) => {
                                 </form>
                             </div>
                             <div className="modal-footer justify-content-start bgc-secondary-l4">
-                                <button onClick={handleSubmit} type="button" className="btn btn-blue py-15 px-4 ml-2">
+                                <button onClick={handleSubmit} type="button"
+                                        className="btn btn-blue py-15 px-4 ml-2">
                                     Send
                                 </button>
                             </div>

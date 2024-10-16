@@ -6,6 +6,7 @@ import Alert from "@mui/material/Alert";
 import Select from 'react-select'
 import Categories from "./Categories";
 import './styles/tasks.css';
+import Header from "./Header";
 
 const Form = () => {
     const navigate = useNavigate();
@@ -123,93 +124,96 @@ const Form = () => {
     }
 
     return (
-        <div className="row">
-            <Categories isLoading={isLoading}/>
-            <div className="col-12 col-md-8 col-xl-9 pt-3">
-                <div className="d-flex flex-wrap py-1 pt-lg-3 pb-lg-2 mt-lg-1">
-                    <Link to={`/`} id="message-list-back-btn"
-                          className="btn btn-lighter-primary btn-tp border-0">
-                        <i className="fa fa-arrow-left mr-1 text-90"/>
-                        <span className="text-dark-m3">
+        <>
+            <Header isLoading={isLoading}/>
+            <div className="row">
+                <Categories/>
+                <div className="col-12 col-md-8 col-xl-9 pt-3">
+                    <div className="d-flex flex-wrap py-1 pt-lg-3 pb-lg-2 mt-lg-1">
+                        <Link to={`/`} id="message-list-back-btn"
+                              className="btn btn-lighter-primary btn-tp border-0">
+                            <i className="fa fa-arrow-left mr-1 text-90"/>
+                            <span className="text-dark-m3">
                     Back
                     </span>
-                    </Link>
-                </div>
-                <hr className="mt-2 mt-sm-1 brc-black-tp10"/>
+                        </Link>
+                    </div>
+                    <hr className="mt-2 mt-sm-1 brc-black-tp10"/>
 
-                {error && <Alert severity="error" onClose={() => {
-                    setError(null)
-                }}>{error}</Alert>}
+                    {error && <Alert severity="error" onClose={() => {
+                        setError(null)
+                    }}>{error}</Alert>}
 
-                <div className=" mr-2 my-2"
-                     role="document">
-                    <div className="modal-content border-0 mb-2 radius-1 shadow">
-                        <div className="modal-header bgc-dark-d3 border-0 text-white pt-25 pb-2">
-                            <h5 className="text-110 py-0 my-0">
-                                {id ? 'Update' : 'New'} Task
-                            </h5>
-                        </div>
-                        <div className="modal-body">
-                            <form autoComplete="off" onSubmit={handleSubmit} className="d-flex flex-column">
-                                <div className="form-group row">
-                                    <div className="flex-grow-1 px-3">
-                                        <input type="text"
-                                               value={task.title}
-                                               onChange={handleInput}
-                                               name="title"
-                                               className="px-1 brc-grey-l2 form-control border-none border-b-1 shadow-none radius-0"
-                                               id="id-form-field-1" placeholder="Title"/>
+                    <div className=" mr-2 my-2"
+                         role="document">
+                        <div className="modal-content border-0 mb-2 radius-1 shadow">
+                            <div className="modal-header bgc-dark-d3 border-0 text-white pt-25 pb-2">
+                                <h5 className="text-110 py-0 my-0">
+                                    {id ? 'Update' : 'New'} Task
+                                </h5>
+                            </div>
+                            <div className="modal-body">
+                                <form autoComplete="off" onSubmit={handleSubmit} className="d-flex flex-column">
+                                    <div className="form-group row">
+                                        <div className="flex-grow-1 px-3">
+                                            <input type="text"
+                                                   value={task.title}
+                                                   onChange={handleInput}
+                                                   name="title"
+                                                   className="px-1 brc-grey-l2 form-control border-none border-b-1 shadow-none radius-0"
+                                                   id="id-form-field-1" placeholder="Title"/>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="form-group row">
-                                    <div className="flex-grow-1 px-3">
-                                        {(!id || (categories && task.category.id)) && <Select
-                                            options={categories}
-                                            defaultValue={id ? getDefaultValue(
-                                                task.category.name,
-                                                config.API_URLS.CATEGORIES.concat('/') + task.category.id
-                                            ) : ''}
-                                        />}
+                                    <div className="form-group row">
+                                        <div className="flex-grow-1 px-3">
+                                            {(!id || (categories && task.category.id)) && <Select
+                                                options={categories}
+                                                defaultValue={id ? getDefaultValue(
+                                                    task.category.name,
+                                                    config.API_URLS.CATEGORIES.concat('/') + task.category.id
+                                                ) : ''}
+                                            />}
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="form-group row">
-                                    <div className="flex-grow-1 px-3">
-                                        {(!id || (user && task.user.id)) && <Select
-                                            options={user}
-                                            defaultValue={id ? getDefaultValue(
-                                                task.user.name + ' ' + task.user.last_name,
-                                                config.API_URLS.USERS.concat('/') + task.user.id
-                                            ) : ''}
-                                        />}
+                                    <div className="form-group row">
+                                        <div className="flex-grow-1 px-3">
+                                            {(!id || (user && task.user.id)) && <Select
+                                                options={user}
+                                                defaultValue={id ? getDefaultValue(
+                                                    task.user.name + ' ' + task.user.last_name,
+                                                    config.API_URLS.USERS.concat('/') + task.user.id
+                                                ) : ''}
+                                            />}
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="form-group row mt-3">
-                                    <div className="px-3 w-100">
+                                    <div className="form-group row mt-3">
+                                        <div className="px-3 w-100">
                                         <textarea onChange={handleInput}
                                                   name="description"
                                                   defaultValue={task.description}
                                                   className="px-1 brc-grey-l2 form-control border-none border-b-1 shadow-none radius-0"
                                                   id="id-form-field-1"
                                                   placeholder="Description"/>
+                                        </div>
                                     </div>
-                                </div>
 
-                            </form>
+                                </form>
 
-                        </div>
+                            </div>
 
-                        <div className="modal-footer justify-content-start bgc-secondary-l4">
-                            <button onClick={handleSubmit} type="button" className="btn btn-blue py-15 px-4 ml-2">
-                                <i className="fa fa-save"/> Save
-                            </button>
+                            <div className="modal-footer justify-content-start bgc-secondary-l4">
+                                <button onClick={handleSubmit} type="button" className="btn btn-blue py-15 px-4 ml-2">
+                                    <i className="fa fa-save"/> Save
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 export default Form;
