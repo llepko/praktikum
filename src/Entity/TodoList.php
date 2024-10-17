@@ -53,6 +53,10 @@ class TodoList
     #[Assert\Valid]
     private ?User $user = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups('todoList')]
+    private ?\DateTimeInterface $taskDate = null;
+
     public function __construct()
     {
         $this->created_at = new \DateTimeImmutable();
@@ -119,6 +123,18 @@ class TodoList
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getTaskDate(): ?\DateTimeInterface
+    {
+        return $this->taskDate;
+    }
+
+    public function setTaskDate(?\DateTimeInterface $taskDate): static
+    {
+        $this->taskDate = $taskDate;
 
         return $this;
     }

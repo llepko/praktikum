@@ -1,11 +1,19 @@
 import config from "../../config.json";
 import React, {useEffect, useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
+
 import axios from "axios";
 import Alert from "@mui/material/Alert";
 import Select from 'react-select'
 import Categories from "./Categories";
 import Header from "./Header";
+
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import dayjs from "dayjs";
+import moment from "moment";
 
 const Form = (prop) => {
     const navigate = useNavigate();
@@ -34,6 +42,21 @@ const Form = (prop) => {
         event.preventDefault();
         const {name, value} = event.target;
         setTask({...task, [name]: value});
+    }
+
+    const handleDateTime = (date, name) => {
+        let options = {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+            hour12: false,
+            timeZone: "America/Los_Angeles",
+        };
+        let dateTime = new Intl.DateTimeFormat(undefined, options).format(date);
+        setTask({...task, [name]: dateTime});
     }
 
     const handleDefaultValues = function () {
@@ -176,6 +199,24 @@ const Form = (prop) => {
                                                 name='user'
                                                 defaultValue={defaultValues.users}
                                             />}
+                                        </div>
+                                    </div>
+
+                                    <div className="form-group row">
+                                        <div className="flex-grow-1 px-3">
+                                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                <DemoContainer
+                                                    components={['DateTimePicker', 'DateTimePicker', 'DateTimePicker']}
+                                                >
+                                                    <DateTimePicker
+                                                        onChange={(date) => handleDateTime(date, 'taskDate')}
+                                                        inputFormat="dd-MM-yyyy hh:mm"
+                                                        label="Task date"
+                                                        value={dayjs(task.taskDate)}
+                                                        name="taskDate"
+                                                    />
+                                                </DemoContainer>
+                                            </LocalizationProvider>
                                         </div>
                                     </div>
 
