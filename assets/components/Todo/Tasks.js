@@ -136,10 +136,14 @@ const Tasks = () => {
                                             <div
                                                 className="message-user mb-1 mb-lg-0 col-auto px-0 text-95 text-dark-m3">
                                                 {item.user.name} {item.user.last_name}
+                                                {item.taskDate && <div><small>{new Date(item.taskDate).toDateString()}</small></div>}
                                             </div>
                                             <div
                                                 className="message-text ml-lg-3 ml-lg-5 pr-1 pr-lg-0 text-90  text-dark-m3 pos-rel">
-                                                <span className="p-1 bgc-blue radius-round d-inline-block mr-1"/>
+
+                                                {item.taskDate && new Date(item.taskDate) > new Date() &&
+                                                    <span className="p-1 bgc-blue radius-round d-inline-block mr-1"/>}
+
                                                 {item.title}
                                             </div>
                                         </div>
