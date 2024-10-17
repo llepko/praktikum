@@ -64,7 +64,7 @@ const Tasks = () => {
         });
     };
 
-    const handelDelete = async (id) => {
+    const handleDelete = async (id) => {
         setIsLoading(true);
         try {
             const response = await fetch(config.API_URLS.TODO.concat("/") + id, {
@@ -163,7 +163,7 @@ const Tasks = () => {
                                             onClick={handleActions}
                                             className="message-actions position-r mr-1 v-hover p-15 bgc-white-tp1 shadow-sm radius-2px">
                                             <a href="#"
-                                               onClick={() => handelDelete(item.id)}
+                                               onClick={() => handleDelete(item.id)}
                                                className="btn btn-tp border-0 btn-text-danger btn-light-danger mr-2px px-2">
                                                 <i className="fa fa-trash-alt text-danger-m1 w-2"/>
                                             </a>
