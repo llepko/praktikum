@@ -54,8 +54,9 @@ const Tasks = () => {
         axios
         .get(url)
         .then((res) => {
-            setTask(res.data['hydra:member']);
-            setPagination(res.data['hydra:view']);
+            res.data['hydra:member'] && setTask(res.data['hydra:member']);
+            res.data['hydra:view'] && setPagination(res.data['hydra:view']);
+
             setIsLoading(false);
         })
         .catch((err) => {
